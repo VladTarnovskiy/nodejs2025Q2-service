@@ -1,4 +1,3 @@
-import { PartialType } from '@nestjs/mapped-types';
 import {
   IsNotEmpty,
   IsNumber,
@@ -23,5 +22,3 @@ export class ICreateTrackDto {
   @IsNumber()
   duration: number; // integer number
 }
-
-export class IUpdateTrackDto extends PartialType(ICreateTrackDto) {}

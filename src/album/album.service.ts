@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DataBaseService } from 'src/db/db.service';
 import { v4 as uuidv4 } from 'uuid';
-import { ICreateAlbumDto, IUpdateAlbumDto } from './dto/album.dto';
+import { ICreateAlbumDto } from './dto/album.dto';
 import { IAlbum } from './interfaces/album.interface';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class AlbumService {
     throw new NotFoundException();
   }
 
-  update(id: string, updateAlbumDto: IUpdateAlbumDto): IAlbum {
+  update(id: string, updateAlbumDto: ICreateAlbumDto): IAlbum {
     const album = this.findOne(id);
     album.name = updateAlbumDto.name;
     album.year = updateAlbumDto.year;

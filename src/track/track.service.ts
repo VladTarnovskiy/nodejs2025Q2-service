@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DataBaseService } from 'src/db/db.service';
 import { v4 as uuidv4 } from 'uuid';
-import { ICreateTrackDto, IUpdateTrackDto } from './dto/track.dto';
+import { ICreateTrackDto } from './dto/track.dto';
 import { ITrack } from './interfaces/track.interface';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class TrackService {
     throw new NotFoundException();
   }
 
-  update(id: string, updateTrackDto: IUpdateTrackDto): ITrack {
+  update(id: string, updateTrackDto: ICreateTrackDto): ITrack {
     const track = this.findOne(id);
     track.name = updateTrackDto.name;
     track.artistId = updateTrackDto.artistId;
