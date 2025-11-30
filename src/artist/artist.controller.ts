@@ -17,6 +17,7 @@ export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 
   @Post()
+  @HttpCode(201)
   create(@Body() createArtistDto: ICreateArtistDto) {
     return this.artistService.create(createArtistDto);
   }

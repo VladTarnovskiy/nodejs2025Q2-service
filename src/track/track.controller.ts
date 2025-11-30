@@ -17,6 +17,7 @@ export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Post()
+  @HttpCode(201)
   create(@Body() createTrackDto: ICreateTrackDto) {
     return this.trackService.create(createTrackDto);
   }

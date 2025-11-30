@@ -17,6 +17,7 @@ export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
   @Post()
+  @HttpCode(201)
   create(@Body() createAlbumDto: ICreateAlbumDto) {
     return this.albumService.create(createAlbumDto);
   }

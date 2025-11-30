@@ -18,6 +18,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @HttpCode(201)
   create(@Body() createUserDto: ICreateUserDto) {
     return this.userService.create(createUserDto);
   }
