@@ -39,14 +39,10 @@ To run all tests without authorization
 npm run test
 ```
 
-### Auto-fix and format
+### Check for lint errors
 
 ```
 npm run lint
-```
-
-```
-npm run format
 ```
 
 ### Debugging in VSCode
