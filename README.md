@@ -19,6 +19,8 @@ npm install
 
 ## Running application
 
+First of all you need to create a `.env` file. Copy from .env.example
+
 ```
 npm start
 ```
