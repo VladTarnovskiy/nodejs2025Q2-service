@@ -16,7 +16,9 @@ export class FavoriteService {
   addArtist(id: string) {
     const artist = this.db.artists.find((artist) => artist.id === id);
     if (artist) {
-      this.db.favorites.artists.push(id);
+      if (!this.db.favorites.artists.includes(id)) {
+        this.db.favorites.artists.push(id);
+      }
       return artist;
     }
     throw new UnprocessableEntityException();
@@ -25,7 +27,9 @@ export class FavoriteService {
   addAlbum(id: string) {
     const album = this.db.albums.find((album) => album.id === id);
     if (album) {
-      this.db.favorites.albums.push(id);
+      if (!this.db.favorites.albums.includes(id)) {
+        this.db.favorites.albums.push(id);
+      }
       return album;
     }
     throw new UnprocessableEntityException();
@@ -34,22 +38,31 @@ export class FavoriteService {
   addTrack(id: string) {
     const track = this.db.tracks.find((track: ITrack) => track.id === id);
     if (track) {
-      this.db.favorites.tracks.push(id);
+      if (!this.db.favorites.tracks.includes(id)) {
+        this.db.favorites.tracks.push(id);
+      }
       return track;
     }
     throw new UnprocessableEntityException();
   }
 
   findAll(): IFavoriteAllRes {
-    const arrOfArtists = this.db.favorites.artists.map((artistId) =>
-      this.db.artists.find((artist: IArtist) => artist.id === artistId),
-    );
-    const arrOfAlbums = this.db.favorites.albums.map((albumId) =>
-      this.db.albums.find((album: IAlbum) => album.id === albumId),
-    );
-    const arrOfTracks = this.db.favorites.tracks.map((trackId) =>
-      this.db.tracks.find((track: ITrack) => track.id === trackId),
-    );
+    const arrOfArtists = this.db.favorites.artists
+      .map((artistId) =>
+        this.db.artists.find((artist: IArtist) => artist.id === artistId),
+      )
+      .filter(Boolean);
+    const arrOfAlbums = this.db.favorites.albums
+      .map((albumId) =>
+        this.db.albums.find((album: IAlbum) => album.id === albumId),
+      )
+      .filter(Boolean);
+    const arrOfTracks = this.db.favorites.tracks
+      .map((trackId) =>
+        this.db.tracks.find((track: ITrack) => track.id === trackId),
+      )
+      .filter(Boolean);
+
     return {
       artists: arrOfArtists,
       albums: arrOfAlbums,
