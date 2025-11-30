@@ -9,7 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ICreateTrackDto, IUpdateTrackDto } from './dto/track.dto';
+import { ICreateTrackDto } from './dto/track.dto';
 import { TrackService } from './track.service';
 
 @Controller('track')
@@ -35,7 +35,7 @@ export class TrackController {
   @Put(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateTrackDto: IUpdateTrackDto,
+    @Body() updateTrackDto: ICreateTrackDto,
   ) {
     return this.trackService.update(id, updateTrackDto);
   }
