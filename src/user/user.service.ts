@@ -37,7 +37,7 @@ export class UserService {
     }));
   }
 
-  findOne(id: string): IUser {
+  findOne(id: string): Omit<IUser, 'password'> {
     const user = this.db.users.find((item) => item.id === id);
     if (user) {
       const userResp = { ...user };
@@ -47,7 +47,10 @@ export class UserService {
     throw new NotFoundException();
   }
 
-  update(id: string, updatePasswordDto: IUpdatePasswordDto): IUser {
+  update(
+    id: string,
+    updatePasswordDto: IUpdatePasswordDto,
+  ): Omit<IUser, 'password'> {
     const user = this.db.users.find((item) => item.id === id);
     if (user) {
       if (user.password === updatePasswordDto.oldPassword) {
