@@ -40,6 +40,16 @@ export class AlbumService {
   remove(id: string) {
     const album = this.findOne(id);
     if (album) {
+      this.db.favorites.albums = this.db.favorites.albums.filter(
+        (albumId) => albumId !== id,
+      );
+
+      this.db.tracks.forEach((track) => {
+        if (track.albumId === id) {
+          track.albumId = null;
+        }
+      });
+
       this.db.albums = this.db.albums.filter((item) => item.id !== id);
     }
   }

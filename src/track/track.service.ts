@@ -41,6 +41,10 @@ export class TrackService {
   remove(id: string) {
     const track = this.findOne(id);
     if (track) {
+      this.db.favorites.tracks = this.db.favorites.tracks.filter(
+        (trackId) => trackId !== id,
+      );
+
       this.db.tracks = this.db.tracks.filter((item) => item.id !== id);
     }
   }

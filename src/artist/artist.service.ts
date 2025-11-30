@@ -39,6 +39,22 @@ export class ArtistService {
   remove(id: string) {
     const artist = this.findOne(id);
     if (artist) {
+      this.db.favorites.artists = this.db.favorites.artists.filter(
+        (artistId) => artistId !== id,
+      );
+
+      this.db.albums.forEach((album) => {
+        if (album.artistId === id) {
+          album.artistId = null;
+        }
+      });
+
+      this.db.tracks.forEach((track) => {
+        if (track.artistId === id) {
+          track.artistId = null;
+        }
+      });
+      // Remove artist
       this.db.artists = this.db.artists.filter((item) => item.id !== id);
     }
   }
