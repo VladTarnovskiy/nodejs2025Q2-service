@@ -1,56 +1,48 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DataBaseService } from 'src/db/db.service';
-import { v4 as uuidv4 } from 'uuid';
 import { ICreateAlbumDto } from './dto/album.dto';
 import { IAlbum } from './interfaces/album.interface';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class AlbumService {
-  constructor(private db: DataBaseService) {}
+  constructor(private db: DatabaseService) {}
 
-  create(createAlbumDto: ICreateAlbumDto): IAlbum {
-    const album = {
-      ...createAlbumDto,
-      id: uuidv4(),
-    };
-    this.db.albums.push(album);
+  async create(createAlbumDto: ICreateAlbumDto): Promise<IAlbum> {
+    const album = await this.db.album.create({
+      data: createAlbumDto,
+    });
     return album;
   }
 
-  findAll(): IAlbum[] {
-    return this.db.albums;
+  async findAll(): Promise<IAlbum[]> {
+    return await this.db.album.findMany();
   }
 
-  findOne(id: string): IAlbum {
-    const album = this.db.albums.find((item) => item.id === id);
+  async findOne(id: string): Promise<IAlbum> {
+    const album = await this.db.album.findUnique({ where: { id } });
     if (album) {
       return album;
     }
     throw new NotFoundException();
   }
 
-  update(id: string, updateAlbumDto: ICreateAlbumDto): IAlbum {
-    const album = this.findOne(id);
-    album.name = updateAlbumDto.name;
-    album.year = updateAlbumDto.year;
-    album.artistId = updateAlbumDto.artistId;
-    return album;
-  }
-
-  remove(id: string) {
+  async update(id: string, updateAlbumDto: ICreateAlbumDto): Promise<IAlbum> {
     const album = this.findOne(id);
     if (album) {
-      this.db.favorites.albums = this.db.favorites.albums.filter(
-        (albumId) => albumId !== id,
-      );
-
-      this.db.tracks.forEach((track) => {
-        if (track.albumId === id) {
-          track.albumId = null;
-        }
+      const updatedAlbum = await this.db.album.update({
+        where: { id },
+        data: updateAlbumDto,
       });
+      return updatedAlbum;
+    }
+  }
 
-      this.db.albums = this.db.albums.filter((item) => item.id !== id);
+  async remove(id: string) {
+    const album = this.findOne(id);
+    if (album) {
+      await this.db.album.delete({ where: { id } });
+    } else {
+      throw new NotFoundException();
     }
   }
 }

@@ -32,8 +32,8 @@ export class AlbumController {
     status: 400,
     description: 'Bad request. body does not contain required fields',
   })
-  create(@Body() createAlbumDto: ICreateAlbumDto) {
-    return this.albumService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: ICreateAlbumDto) {
+    return await this.albumService.create(createAlbumDto);
   }
 
   @Get()
@@ -45,8 +45,8 @@ export class AlbumController {
     status: 200,
     description: 'Successful operation',
   })
-  findAll() {
-    return this.albumService.findAll();
+  async findAll() {
+    return await this.albumService.findAll();
   }
 
   @Get(':id')
@@ -64,8 +64,8 @@ export class AlbumController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 404, description: 'Album was not found.' })
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.albumService.findOne(id);
   }
 
   @Put(':id')
@@ -83,11 +83,11 @@ export class AlbumController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 404, description: 'Album was not found.' })
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: ICreateAlbumDto,
   ) {
-    return this.albumService.update(id, updateAlbumDto);
+    return await this.albumService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
@@ -106,7 +106,7 @@ export class AlbumController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 404, description: 'Album was not found.' })
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.albumService.remove(id);
   }
 }
