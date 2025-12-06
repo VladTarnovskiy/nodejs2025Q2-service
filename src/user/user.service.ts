@@ -3,61 +3,58 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DataBaseService } from 'src/db/db.service';
 import { ICreateUserDto } from './dto/user.dto';
 import { IUpdatePasswordDto } from './dto/password.dto';
 import { IUser } from './interfaces/user.interface';
-import { v4 as uuidv4 } from 'uuid';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class UserService {
-  constructor(private db: DataBaseService) {}
+  constructor(private db: DatabaseService) {}
 
-  create(createUserDto: ICreateUserDto): Omit<IUser, 'password'> {
-    const user = {
-      ...createUserDto,
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      id: uuidv4(),
-    };
-    this.db.users.push(user);
-    const userResp = { ...user };
-    delete userResp.password;
-    return userResp;
+  async create(
+    createUserDto: ICreateUserDto,
+  ): Promise<Omit<IUser, 'password'>> {
+    const createdUser = await this.db.user.create({
+      data: createUserDto,
+      omit: { password: true },
+    });
+    return createdUser;
   }
 
-  findAll(): Omit<IUser, 'password'>[] {
-    return this.db.users.map((item) => ({
-      createdAt: item.createdAt,
-      id: item.id,
-      login: item.login,
-      updatedAt: item.updatedAt,
-      version: item.version,
-    }));
+  async findAll(): Promise<Omit<IUser, 'password'>[]> {
+    const users = await this.db.user.findMany({ omit: { password: true } });
+    return users;
   }
 
-  findOne(id: string): Omit<IUser, 'password'> {
-    const user = this.db.users.find((item) => item.id === id);
+  async findOne(id: string): Promise<Omit<IUser, 'password'>> {
+    const user = await this.db.user.findUnique({
+      where: { id },
+      omit: { password: true },
+    });
     if (user) {
-      const userResp = { ...user };
-      delete userResp.password;
-      return userResp;
+      return user;
     }
     throw new NotFoundException();
   }
 
-  update(
+  async update(
     id: string,
     updatePasswordDto: IUpdatePasswordDto,
-  ): Omit<IUser, 'password'> {
-    const user = this.db.users.find((item) => item.id === id);
+  ): Promise<Omit<IUser, 'password'>> {
+    const user = await this.db.user.findUnique({
+      where: { id },
+    });
     if (user) {
       if (user.password === updatePasswordDto.oldPassword) {
-        user.password = updatePasswordDto.newPassword;
-        user.version += 1;
-        user.updatedAt = Date.now();
-        const userResp = { ...user };
+        const updatedUser = await this.db.user.update({
+          where: { id },
+          data: {
+            version: user.version + 1,
+            password: updatePasswordDto.newPassword,
+          },
+        });
+        const userResp = { ...updatedUser };
         delete userResp.password;
         return userResp;
       }
@@ -66,10 +63,12 @@ export class UserService {
     throw new NotFoundException();
   }
 
-  remove(id: string) {
-    const user = this.findOne(id);
+  async remove(id: string) {
+    const user = await this.findOne(id);
     if (user) {
-      this.db.users = this.db.users.filter((item) => item.id !== id);
+      await this.db.user.delete({ where: { id } });
+    } else {
+      throw new NotFoundException();
     }
   }
 }
