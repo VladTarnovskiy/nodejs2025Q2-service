@@ -8,11 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { IFavoriteAllRes } from './interfaces/favorite.interface';
 import { FavoriteService } from './favorite.service';
-import { ITrack } from 'src/track/interfaces/track.interface';
-import { IAlbum } from 'src/album/interfaces/album.interface';
-import { IArtist } from 'src/artist/interfaces/artist.interface';
 
 @ApiTags('Favorites')
 @Controller('favs')
@@ -35,8 +31,8 @@ export class FavoriteController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 422, description: "Artist with id doesn't exist." })
-  addArtist(@Param('id', ParseUUIDPipe) id: string): IArtist {
-    return this.favoriteService.addArtist(id);
+  async addArtist(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favoriteService.addArtist(id);
   }
 
   @Post('album/:id')
@@ -55,8 +51,8 @@ export class FavoriteController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 422, description: "Album with id doesn't exist." })
-  addAlbum(@Param('id', ParseUUIDPipe) id: string): IAlbum {
-    return this.favoriteService.addAlbum(id);
+  async addAlbum(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favoriteService.addAlbum(id);
   }
 
   @Post('track/:id')
@@ -75,8 +71,8 @@ export class FavoriteController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 422, description: "Track with id doesn't exist." })
-  addTrack(@Param('id', ParseUUIDPipe) id: string): ITrack {
-    return this.favoriteService.addTrack(id);
+  async addTrack(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favoriteService.addTrack(id);
   }
 
   @Get()
@@ -88,8 +84,8 @@ export class FavoriteController {
     status: 200,
     description: 'Successful operation',
   })
-  findAll(): IFavoriteAllRes {
-    return this.favoriteService.findAll();
+  async findAll() {
+    return await this.favoriteService.findAll();
   }
 
   @Delete('artist/:id')
@@ -108,8 +104,8 @@ export class FavoriteController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 404, description: 'Artist was not found.' })
-  removeArtist(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoriteService.removeArtist(id);
+  async removeArtist(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favoriteService.removeArtist(id);
   }
 
   @Delete('album/:id')
@@ -128,8 +124,8 @@ export class FavoriteController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 404, description: 'Album was not found.' })
-  removeAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoriteService.removeAlbum(id);
+  async removeAlbum(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favoriteService.removeAlbum(id);
   }
 
   @Delete('track/:id')
@@ -148,7 +144,7 @@ export class FavoriteController {
     description: 'Bad request. id is invalid (not uuid)',
   })
   @ApiResponse({ status: 404, description: 'Track was not found.' })
-  removeTrack(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoriteService.removeTrack(id);
+  async removeTrack(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favoriteService.removeTrack(id);
   }
 }

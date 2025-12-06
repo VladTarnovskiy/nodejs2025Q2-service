@@ -3,101 +3,90 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { IAlbum } from 'src/album/interfaces/album.interface';
-import { IArtist } from 'src/artist/interfaces/artist.interface';
-import { DataBaseService } from 'src/db/db.service';
-import { ITrack } from 'src/track/interfaces/track.interface';
 import { IFavoriteAllRes } from './interfaces/favorite.interface';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class FavoriteService {
-  constructor(private db: DataBaseService) {}
+  constructor(private db: DatabaseService) {}
 
-  addArtist(id: string) {
-    const artist = this.db.artists.find((artist) => artist.id === id);
+  async addArtist(id: string) {
+    const artist = await this.db.artist.findUnique({ where: { id } });
     if (artist) {
-      if (!this.db.favorites.artists.includes(id)) {
-        this.db.favorites.artists.push(id);
-      }
-      return artist;
+      const artistResp = await this.db.artistOnFav.create({
+        data: { artistId: id },
+      });
+      return artistResp;
     }
     throw new UnprocessableEntityException();
   }
 
-  addAlbum(id: string) {
-    const album = this.db.albums.find((album) => album.id === id);
+  async addAlbum(id: string) {
+    const album = await this.db.album.findUnique({ where: { id } });
     if (album) {
-      if (!this.db.favorites.albums.includes(id)) {
-        this.db.favorites.albums.push(id);
-      }
-      return album;
+      const albumResp = await this.db.albumOnFav.create({
+        data: { albumId: id },
+      });
+      return albumResp;
     }
     throw new UnprocessableEntityException();
   }
 
-  addTrack(id: string) {
-    const track = this.db.tracks.find((track: ITrack) => track.id === id);
+  async addTrack(id: string) {
+    const track = await this.db.track.findUnique({ where: { id } });
     if (track) {
-      if (!this.db.favorites.tracks.includes(id)) {
-        this.db.favorites.tracks.push(id);
-      }
-      return track;
+      const trackResp = await this.db.trackOnFav.create({
+        data: { trackId: id },
+      });
+      return trackResp;
     }
     throw new UnprocessableEntityException();
   }
 
-  findAll(): IFavoriteAllRes {
-    const arrOfArtists = this.db.favorites.artists
-      .map((artistId) =>
-        this.db.artists.find((artist: IArtist) => artist.id === artistId),
-      )
-      .filter(Boolean);
-    const arrOfAlbums = this.db.favorites.albums
-      .map((albumId) =>
-        this.db.albums.find((album: IAlbum) => album.id === albumId),
-      )
-      .filter(Boolean);
-    const arrOfTracks = this.db.favorites.tracks
-      .map((trackId) =>
-        this.db.tracks.find((track: ITrack) => track.id === trackId),
-      )
-      .filter(Boolean);
+  async findAll(): Promise<IFavoriteAllRes> {
+    const [albumFavs, artistFavs, trackFavs] = await Promise.all([
+      this.db.albumOnFav.findMany({ include: { album: true } }),
+      this.db.artistOnFav.findMany({ include: { artist: true } }),
+      this.db.trackOnFav.findMany({ include: { track: true } }),
+    ]);
 
-    return {
-      artists: arrOfArtists,
-      albums: arrOfAlbums,
-      tracks: arrOfTracks,
+    const response = {
+      albums: albumFavs.map((item) => item.album),
+      artists: artistFavs.map((item) => item.artist),
+      tracks: trackFavs.map((item) => item.track),
     };
+
+    return response;
   }
 
-  removeArtist(id: string) {
-    const artistInFav = this.db.favorites.artists.includes(id);
+  async removeArtist(id: string) {
+    const artistInFav = await this.db.artistOnFav.findUnique({
+      where: { id },
+    });
     if (artistInFav) {
-      this.db.favorites.artists = this.db.favorites.artists.filter(
-        (artistId) => artistId !== id,
-      );
+      await this.db.artistOnFav.delete({ where: { artistId: id } });
     } else {
       throw new NotFoundException();
     }
   }
 
-  removeAlbum(id: string) {
-    const albumInFav = this.db.favorites.albums.includes(id);
+  async removeAlbum(id: string) {
+    const albumInFav = await this.db.albumOnFav.findUnique({
+      where: { id },
+    });
     if (albumInFav) {
-      this.db.favorites.albums = this.db.favorites.albums.filter(
-        (albumId) => albumId !== id,
-      );
+      await this.db.albumOnFav.delete({ where: { albumId: id } });
     } else {
       throw new NotFoundException();
     }
   }
 
-  removeTrack(id: string) {
-    const trackInFav = this.db.favorites.tracks.includes(id);
+  async removeTrack(id: string) {
+    const trackInFav = await this.db.trackOnFav.findUnique({
+      where: { id },
+    });
     if (trackInFav) {
-      this.db.favorites.tracks = this.db.favorites.tracks.filter(
-        (trackId) => trackId !== id,
-      );
+      await this.db.trackOnFav.delete({ where: { trackId: id } });
     } else {
       throw new NotFoundException();
     }
