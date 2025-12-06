@@ -32,7 +32,7 @@ export class ArtistService {
     id: string,
     updateArtistDto: ICreateArtistDto,
   ): Promise<IArtist> {
-    const artist = this.findOne(id);
+    const artist = await this.findOne(id);
     if (artist) {
       const updatedArtist = await this.db.artist.update({
         where: { id },
@@ -43,7 +43,7 @@ export class ArtistService {
   }
 
   async remove(id: string) {
-    const artist = this.findOne(id);
+    const artist = await this.findOne(id);
     if (artist) {
       await this.db.artist.delete({
         where: { id },

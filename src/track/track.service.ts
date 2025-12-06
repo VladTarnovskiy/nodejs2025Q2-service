@@ -1,51 +1,49 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DataBaseService } from 'src/db/db.service';
-import { v4 as uuidv4 } from 'uuid';
 import { ICreateTrackDto } from './dto/track.dto';
 import { ITrack } from './interfaces/track.interface';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class TrackService {
-  constructor(private db: DataBaseService) {}
+  constructor(private db: DatabaseService) {}
 
-  create(createTrackDto: ICreateTrackDto): ITrack {
-    const track = {
-      ...createTrackDto,
-      id: uuidv4(),
-    };
-    this.db.tracks.push(track);
+  async create(createTrackDto: ICreateTrackDto): Promise<ITrack> {
+    const track = await this.db.track.create({
+      data: createTrackDto,
+    });
     return track;
   }
 
-  findAll(): ITrack[] {
-    return this.db.tracks;
+  async findAll(): Promise<ITrack[]> {
+    return await this.db.track.findMany();
   }
 
-  findOne(id: string): ITrack {
-    const track = this.db.tracks.find((item) => item.id === id);
+  async findOne(id: string): Promise<ITrack> {
+    const track = await this.db.track.findUnique({ where: { id } });
+
     if (track) {
       return track;
     }
     throw new NotFoundException();
   }
 
-  update(id: string, updateTrackDto: ICreateTrackDto): ITrack {
-    const track = this.findOne(id);
-    track.name = updateTrackDto.name;
-    track.artistId = updateTrackDto.artistId;
-    track.albumId = updateTrackDto.albumId;
-    track.duration = updateTrackDto.duration;
-    return track;
+  async update(id: string, updateTrackDto: ICreateTrackDto): Promise<ITrack> {
+    const track = await this.findOne(id);
+    if (track) {
+      const updatedTrack = await this.db.track.update({
+        where: { id },
+        data: updateTrackDto,
+      });
+      return updatedTrack;
+    }
   }
 
-  remove(id: string) {
-    const track = this.findOne(id);
+  async remove(id: string) {
+    const track = await this.findOne(id);
     if (track) {
-      this.db.favorites.tracks = this.db.favorites.tracks.filter(
-        (trackId) => trackId !== id,
-      );
-
-      this.db.tracks = this.db.tracks.filter((item) => item.id !== id);
+      await this.db.track.delete({ where: { id } });
+    } else {
+      throw new NotFoundException();
     }
   }
 }

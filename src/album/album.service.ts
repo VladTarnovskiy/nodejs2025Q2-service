@@ -27,7 +27,7 @@ export class AlbumService {
   }
 
   async update(id: string, updateAlbumDto: ICreateAlbumDto): Promise<IAlbum> {
-    const album = this.findOne(id);
+    const album = await this.findOne(id);
     if (album) {
       const updatedAlbum = await this.db.album.update({
         where: { id },
@@ -38,7 +38,7 @@ export class AlbumService {
   }
 
   async remove(id: string) {
-    const album = this.findOne(id);
+    const album = await this.findOne(id);
     if (album) {
       await this.db.album.delete({ where: { id } });
     } else {
