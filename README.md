@@ -52,7 +52,6 @@ docker-compose up
 
 ```
 
-
 ## Testing
 
 ```
@@ -76,3 +75,15 @@ npm run docker:scan
 ## API
 
 There are `Users`, `Artists`, `Albums`, `Tracks` and `Favorites` REST endpoints with separate router paths
+
+## Downloading app images from docker hub
+
+```
+
+docker pull vladtarnovskiy/library:backend
+```
+
+```
+
+docker pull vladtarnovskiy/library:database
+```
