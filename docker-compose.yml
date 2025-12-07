@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Database service using PostgreSQL image
+  database:
+    image: home-library-database
+    build: ./prisma
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - pg-logs:/var/log/postgresql
+    networks:
+      - appnet
+  # Backend service
+  backend:
+    image: home-library-service
+    build: .
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${PG_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public
+    depends_on:
+      - database
+    networks:
+      - appnet
+
+volumes:
+  pg-data:
+  pg-logs:
+
+networks:
+  appnet:
+    external: false
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
