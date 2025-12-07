@@ -27,7 +27,10 @@
     "prisma:migrate": "prisma migrate deploy",
     "database:init": "npm run prisma:generate && npm run prisma:migrate:dev",
     "prisma:generate": "prisma generate",
-    "prisma:migrate:dev": "prisma migrate dev --name migrate"
+    "prisma:migrate:dev": "prisma migrate dev --name migrate",
+    "docker:scan": "npm run docker:scan:backend && npm run docker:scan:database",
+    "docker:scan:backend": "docker scout cves home-library-service",
+    "docker:scan:database": "docker scout cves home-library-database"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.16",
