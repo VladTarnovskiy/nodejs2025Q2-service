@@ -32,11 +32,6 @@ Then you need to create a new PostgresQL database. Be shure that PostgresQL inst
 Execute this command to create a new database
 
 ```
-npx prisma generate
-
-```
-
-```
 npm run database:init
 
 ```

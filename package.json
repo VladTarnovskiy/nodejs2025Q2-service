@@ -15,7 +15,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --testMatch \"<rootDir>/*.spec.ts\" --noStackTrace --runInBand",
     "test:auth": "cross-env TEST_MODE=auth jest --testPathIgnorePatterns refresh.e2e.spec.ts --noStackTrace --runInBand",
@@ -23,11 +23,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "start:dev:docker": "npx prisma generate && npx prisma migrate deploy && npm run start:dev",
-    "prisma:generate": "prisma generate",
+    "start:prod:docker": "npm run prisma:migrate && npm run start:prod",
     "prisma:migrate": "prisma migrate deploy",
-    "prisma:migrate:dev": "prisma migrate dev",
-    "database:init": "npx prisma migrate dev --name init"
+    "database:init": "npm run prisma:generate && npm run prisma:migrate:dev",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev --name migrate"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.16",
