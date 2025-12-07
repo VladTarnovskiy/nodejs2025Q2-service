@@ -52,6 +52,15 @@ docker-compose up
 
 ```
 
+
+## Testing
+
+```
+
+npm run test
+
+```
+
 ## Scan for vulnerabilities
 
 Since docker scan is deprecated, docker scout is used for vulnerabilities scanning.
