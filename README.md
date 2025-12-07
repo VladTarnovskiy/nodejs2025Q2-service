@@ -67,7 +67,3 @@ npm run docker:scan
 ## API
 
 There are `Users`, `Artists`, `Albums`, `Tracks` and `Favorites` REST endpoints with separate router paths
-
-```
-
-```
