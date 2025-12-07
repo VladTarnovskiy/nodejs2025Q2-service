@@ -23,9 +23,9 @@ Docker: https://hub.docker.com/
 npm install
 ```
 
-## Running application localy
-
 First of all you need to create a `.env` file. Copy from .env.example
+
+## Running application localy
 
 Then you need to create a new PostgresQL database. Be shure that PostgresQL installed on your machine.
 
