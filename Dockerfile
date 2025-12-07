@@ -43,6 +43,7 @@ COPY prisma.config.ts ./
 COPY --from=builder /app/dist ./dist
 
 # Copy documentation
+COPY --from=builder /app/generated ./generated
 COPY --from=builder /app/doc ./doc
 
 # Expose the application port
