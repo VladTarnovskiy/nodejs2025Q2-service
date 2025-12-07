@@ -3,6 +3,6 @@ export interface IUser {
   login: string;
   password: string;
   version: number; // integer number, increments on update
-  createdAt: Date; // timestamp of creation
-  updatedAt: Date; // timestamp of last update
+  createdAt: number; // timestamp of creation
+  updatedAt: number; // timestamp of last update
 }

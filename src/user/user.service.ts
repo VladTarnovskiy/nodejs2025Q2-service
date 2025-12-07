@@ -19,12 +19,20 @@ export class UserService {
       data: createUserDto,
       omit: { password: true },
     });
-    return createdUser;
+    return {
+      ...createdUser,
+      createdAt: createdUser.createdAt.getTime(),
+      updatedAt: createdUser.updatedAt.getTime(),
+    };
   }
 
   async findAll(): Promise<Omit<IUser, 'password'>[]> {
     const users = await this.db.user.findMany({ omit: { password: true } });
-    return users;
+    return users.map((user) => ({
+      ...user,
+      createdAt: user.createdAt.getTime(),
+      updatedAt: user.updatedAt.getTime(),
+    }));
   }
 
   async findOne(id: string): Promise<Omit<IUser, 'password'>> {
@@ -33,7 +41,11 @@ export class UserService {
       omit: { password: true },
     });
     if (user) {
-      return user;
+      return {
+        ...user,
+        createdAt: user.createdAt.getTime(),
+        updatedAt: user.updatedAt.getTime(),
+      };
     }
     throw new NotFoundException();
   }
@@ -53,10 +65,13 @@ export class UserService {
             version: user.version + 1,
             password: updatePasswordDto.newPassword,
           },
+          omit: { password: true },
         });
-        const userResp = { ...updatedUser };
-        delete userResp.password;
-        return userResp;
+        return {
+          ...updatedUser,
+          createdAt: updatedUser.createdAt.getTime(),
+          updatedAt: updatedUser.updatedAt.getTime(),
+        };
       }
       throw new ForbiddenException();
     }
@@ -64,11 +79,7 @@ export class UserService {
   }
 
   async remove(id: string) {
-    const user = await this.findOne(id);
-    if (user) {
-      await this.db.user.delete({ where: { id } });
-    } else {
-      throw new NotFoundException();
-    }
+    await this.findOne(id);
+    await this.db.user.delete({ where: { id } });
   }
 }

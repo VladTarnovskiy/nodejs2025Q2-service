@@ -61,7 +61,7 @@ export class FavoriteService {
 
   async removeArtist(id: string) {
     const artistInFav = await this.db.artistOnFav.findUnique({
-      where: { id },
+      where: { artistId: id },
     });
     if (artistInFav) {
       await this.db.artistOnFav.delete({ where: { artistId: id } });
@@ -72,7 +72,7 @@ export class FavoriteService {
 
   async removeAlbum(id: string) {
     const albumInFav = await this.db.albumOnFav.findUnique({
-      where: { id },
+      where: { albumId: id },
     });
     if (albumInFav) {
       await this.db.albumOnFav.delete({ where: { albumId: id } });
@@ -83,7 +83,7 @@ export class FavoriteService {
 
   async removeTrack(id: string) {
     const trackInFav = await this.db.trackOnFav.findUnique({
-      where: { id },
+      where: { trackId: id },
     });
     if (trackInFav) {
       await this.db.trackOnFav.delete({ where: { trackId: id } });
