@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { IUserAuthDto } from './dto/auth.dto';
@@ -8,7 +8,7 @@ import { IUserAuthDto } from './dto/auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('signup')
   @HttpCode(201)
   @ApiOperation({
     summary: 'User registration',
@@ -26,7 +26,8 @@ export class AuthController {
     return await this.authService.signup(registerDto);
   }
 
-  @Get()
+  @Post('login')
+  @HttpCode(200)
   @ApiOperation({ summary: 'User login', description: 'User login' })
   @ApiResponse({
     status: 200,
@@ -35,6 +36,10 @@ export class AuthController {
   @ApiResponse({
     status: 400,
     description: 'Bad request. body does not contain required fields',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Authentication failed',
   })
   async login(@Body() loginDto: IUserAuthDto) {
     return await this.authService.login(loginDto);

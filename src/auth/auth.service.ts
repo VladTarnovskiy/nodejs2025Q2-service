@@ -1,6 +1,6 @@
 import {
   Injectable,
-  NotFoundException,
+  ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -29,31 +29,38 @@ export class AuthService {
         password: hashedPassword,
       },
     });
-    return authData;
+    return {
+      message: 'User created successfully',
+      login: authData.login,
+    };
   }
 
   async login(loginDto: IUserAuthDto): Promise<IAuthLogin> {
     const user = await this.db.registration.findUnique({
       where: { login: loginDto.login },
     });
-    if (user) {
-      const isPasswordValid = await bcrypt.compare(
-        loginDto.password,
-        user.password,
-      );
-      if (isPasswordValid) {
-        const accessPayload: JwtPayload = {
-          sub: user.id,
-          login: user.login,
-        };
 
-        return {
-          access_token: this.jwtService.sign(accessPayload),
-        };
-      }
+    if (!user) {
+      throw new ForbiddenException('Authentication failed');
     }
 
-    throw new NotFoundException();
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new ForbiddenException('Authentication failed');
+    }
+
+    const accessPayload: JwtPayload = {
+      sub: user.id,
+      login: user.login,
+    };
+
+    return {
+      access_token: this.jwtService.sign(accessPayload),
+    };
   }
 
   async validateUser(payload: JwtPayload) {
