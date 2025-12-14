@@ -82,4 +82,12 @@ export class UserService {
     await this.findOne(id);
     await this.db.user.delete({ where: { id } });
   }
+
+  async findByLogin(login: string) {
+    const user = await this.db.user.findUnique({
+      where: { login },
+    });
+
+    return user;
+  }
 }

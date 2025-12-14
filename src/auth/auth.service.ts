@@ -2,12 +2,15 @@ import {
   Injectable,
   ForbiddenException,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { IAuthLogin } from './interfaces/auth.interface';
 import { DatabaseService } from 'src/database/database.service';
 import { IUserAuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
+import { ConfigService } from '@nestjs/config';
 
 export interface JwtPayload {
   sub: string;
@@ -18,24 +21,32 @@ export interface JwtPayload {
 export class AuthService {
   constructor(
     private db: DatabaseService,
+    private userService: UserService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async signup(registerDto: IUserAuthDto) {
+    const existingUser = await this.userService.findByLogin(registerDto.login);
+
+    if (existingUser) {
+      throw new BadRequestException('User with this login already exists');
+    }
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    const authData = await this.db.registration.create({
-      data: {
-        login: registerDto.login,
-        password: hashedPassword,
-      },
+
+    const user = await this.userService.create({
+      login: registerDto.login,
+      password: hashedPassword,
     });
-    return authData;
+
+    return {
+      id: user.id,
+      message: 'User created successfully',
+    };
   }
 
   async login(loginDto: IUserAuthDto): Promise<IAuthLogin> {
-    const user = await this.db.registration.findUnique({
-      where: { login: loginDto.login },
-    });
+    const user = await this.userService.findByLogin(loginDto.login);
 
     if (!user) {
       throw new ForbiddenException('Authentication failed');
@@ -55,19 +66,56 @@ export class AuthService {
       login: user.login,
     };
 
+    const tokens = this.generateTokens(accessPayload);
+
+    console.log(accessPayload);
+
     return {
-      accessToken: this.jwtService.sign(accessPayload),
-      refreshToken: null,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
+  }
+
+  private generateTokens(payload: JwtPayload) {
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('jwtExpiresIn', '1h'),
+    });
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('jwtExpiresInRefresh', '24h'),
+    });
+
+    return {
+      accessToken,
+      refreshToken,
     };
   }
 
   async validateUser(payload: JwtPayload) {
-    const user = await this.db.registration.findUnique({
-      where: { id: payload.sub },
-    });
+    const user = await this.userService.findOne(payload.sub);
     if (!user) {
       throw new UnauthorizedException();
     }
     return user;
+  }
+
+  async refresh(refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET_KEY'),
+      });
+
+      const user = await this.userService.findOne(payload.sub);
+
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+
+      return this.generateTokens({
+        sub: user.id,
+        login: user.login,
+      });
+    } catch (e) {
+      throw new ForbiddenException('Refresh token invalid or expired');
+    }
   }
 }

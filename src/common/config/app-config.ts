@@ -2,5 +2,8 @@ import 'dotenv/config';
 
 export const config = () => ({
   jwtSecret: process.env.JWT_SECRET_KEY,
-  jwtExpiresIn: parseInt(process.env.TOKEN_EXPIRE_TIME || '4800', 10),
+  jwtSecretRefresh: process.env.JWT_SECRET_REFRESH_KEY,
+
+  jwtExpiresIn: process.env.TOKEN_EXPIRE_TIME || '1h',
+  jwtExpiresInRefresh: process.env.TOKEN_REFRESH_EXPIRE_TIME || '24h',
 });

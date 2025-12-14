@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { IUserAuthDto } from './dto/auth.dto';
+import { IUserAuthDto, RefreshTokenDto } from './dto/auth.dto';
 
 @ApiTags('Authorization')
 @Controller('auth')
@@ -43,5 +43,27 @@ export class AuthController {
   })
   async login(@Body() loginDto: IUserAuthDto) {
     return await this.authService.login(loginDto);
+  }
+
+  @Post('refresh')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Refresh tokens',
+    description: 'Refresh tokens',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful operation',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Bad request. body does not contain refresh token',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Refresh token is invalid or expired',
+  })
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+    return await this.authService.refresh(refreshTokenDto.refreshToken);
   }
 }

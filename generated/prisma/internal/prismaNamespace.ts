@@ -390,8 +390,7 @@ export const ModelName = {
   Track: 'Track',
   AlbumOnFav: 'AlbumOnFav',
   ArtistOnFav: 'ArtistOnFav',
-  TrackOnFav: 'TrackOnFav',
-  Registration: 'Registration'
+  TrackOnFav: 'TrackOnFav'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "artist" | "album" | "track" | "albumOnFav" | "artistOnFav" | "trackOnFav" | "registration"
+    modelProps: "user" | "artist" | "album" | "track" | "albumOnFav" | "artistOnFav" | "trackOnFav"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -929,80 +928,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Registration: {
-      payload: Prisma.$RegistrationPayload<ExtArgs>
-      fields: Prisma.RegistrationFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.RegistrationFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.RegistrationFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
-        }
-        findFirst: {
-          args: Prisma.RegistrationFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.RegistrationFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
-        }
-        findMany: {
-          args: Prisma.RegistrationFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>[]
-        }
-        create: {
-          args: Prisma.RegistrationCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
-        }
-        createMany: {
-          args: Prisma.RegistrationCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.RegistrationCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>[]
-        }
-        delete: {
-          args: Prisma.RegistrationDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
-        }
-        update: {
-          args: Prisma.RegistrationUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
-        }
-        deleteMany: {
-          args: Prisma.RegistrationDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.RegistrationUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.RegistrationUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>[]
-        }
-        upsert: {
-          args: Prisma.RegistrationUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
-        }
-        aggregate: {
-          args: Prisma.RegistrationAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateRegistration>
-        }
-        groupBy: {
-          args: Prisma.RegistrationGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RegistrationGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.RegistrationCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RegistrationCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -1106,15 +1031,6 @@ export const TrackOnFavScalarFieldEnum = {
 } as const
 
 export type TrackOnFavScalarFieldEnum = (typeof TrackOnFavScalarFieldEnum)[keyof typeof TrackOnFavScalarFieldEnum]
-
-
-export const RegistrationScalarFieldEnum = {
-  id: 'id',
-  login: 'login',
-  password: 'password'
-} as const
-
-export type RegistrationScalarFieldEnum = (typeof RegistrationScalarFieldEnum)[keyof typeof RegistrationScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1311,7 +1227,6 @@ export type GlobalOmitConfig = {
   albumOnFav?: Prisma.AlbumOnFavOmit
   artistOnFav?: Prisma.ArtistOnFavOmit
   trackOnFav?: Prisma.TrackOnFavOmit
-  registration?: Prisma.RegistrationOmit
 }
 
 /* Types for Logging */

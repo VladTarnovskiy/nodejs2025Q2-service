@@ -18,3 +18,13 @@ export class IUserAuthDto {
   @IsString()
   password: string;
 }
+
+export class RefreshTokenDto {
+  @ApiProperty({
+    description: 'Refresh token',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  @IsNotEmpty()
+  @IsString()
+  refreshToken: string;
+}

@@ -72,8 +72,3 @@ export type ArtistOnFav = Prisma.ArtistOnFavModel
  * 
  */
 export type TrackOnFav = Prisma.TrackOnFavModel
-/**
- * Model Registration
- * 
- */
-export type Registration = Prisma.RegistrationModel

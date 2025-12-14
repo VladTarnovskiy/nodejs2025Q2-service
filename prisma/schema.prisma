@@ -71,9 +71,3 @@ model TrackOnFav {
   track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
   trackId String @unique
 }
-
-model Registration {
-  id        String   @id @default(uuid())
-  login     String   @unique
-  password  String
-}
