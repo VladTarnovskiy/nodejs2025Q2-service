@@ -3,5 +3,6 @@ export interface IAuthRegister {
 }
 
 export interface IAuthLogin {
-  access_token: string;
+  accessToken: string;
+  refreshToken: string | null;
 }

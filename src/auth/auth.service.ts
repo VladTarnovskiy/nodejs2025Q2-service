@@ -29,10 +29,7 @@ export class AuthService {
         password: hashedPassword,
       },
     });
-    return {
-      message: 'User created successfully',
-      login: authData.login,
-    };
+    return authData;
   }
 
   async login(loginDto: IUserAuthDto): Promise<IAuthLogin> {
@@ -59,7 +56,8 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(accessPayload),
+      accessToken: this.jwtService.sign(accessPayload),
+      refreshToken: null,
     };
   }
 
