@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { IAuthLogin } from './interfaces/auth.interface';
-import { DatabaseService } from 'src/database/database.service';
 import { IUserAuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
@@ -20,7 +19,6 @@ export interface JwtPayload {
 @Injectable()
 export class AuthService {
   constructor(
-    private db: DatabaseService,
     private userService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
@@ -32,7 +30,9 @@ export class AuthService {
     if (existingUser) {
       throw new BadRequestException('User with this login already exists');
     }
-    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+    const cryptSalt = this.configService.get('cryptSalt', 10);
+
+    const hashedPassword = await bcrypt.hash(registerDto.password, cryptSalt);
 
     const user = await this.userService.create({
       login: registerDto.login,
@@ -67,8 +67,6 @@ export class AuthService {
     };
 
     const tokens = this.generateTokens(accessPayload);
-
-    console.log(accessPayload);
 
     return {
       accessToken: tokens.accessToken,
