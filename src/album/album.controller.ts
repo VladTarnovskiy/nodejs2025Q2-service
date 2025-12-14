@@ -13,7 +13,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AlbumService } from './album.service';
 import { ICreateAlbumDto } from './dto/album.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/quards/jwt-auth.guard';
 
 @ApiTags('Album')
 @UseGuards(JwtAuthGuard)

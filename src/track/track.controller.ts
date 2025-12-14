@@ -13,7 +13,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ICreateTrackDto } from './dto/track.dto';
 import { TrackService } from './track.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/quards/jwt-auth.guard';
 
 @ApiTags('Track')
 @UseGuards(JwtAuthGuard)

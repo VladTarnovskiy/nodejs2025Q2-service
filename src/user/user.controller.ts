@@ -14,7 +14,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { ICreateUserDto } from './dto/user.dto';
 import { IUpdatePasswordDto } from './dto/password.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/quards/jwt-auth.guard';
 
 @ApiTags('Users')
 @UseGuards(JwtAuthGuard)

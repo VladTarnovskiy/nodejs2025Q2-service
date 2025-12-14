@@ -13,7 +13,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ArtistService } from './artist.service';
 import { ICreateArtistDto } from './dto/artist.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/quards/jwt-auth.guard';
 
 @ApiTags('Artist')
 @UseGuards(JwtAuthGuard)
