@@ -10,11 +10,7 @@ import { IUserAuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { ConfigService } from '@nestjs/config';
-
-export interface JwtPayload {
-  sub: string;
-  login: string;
-}
+import { JwtPayload } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
