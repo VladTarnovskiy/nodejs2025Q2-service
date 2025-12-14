@@ -11,9 +11,14 @@ import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/exception.filter';
 import { RequestResponseLoggingInterceptor } from './common/interceptors/errors-logging-inteceptor';
 import { LoggingService } from './common/services/logging.service';
+import { config } from './common/config/app-config';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true, load: [config] }),
+    AuthModule,
     DatabaseModule,
     UserModule,
     ArtistModule,

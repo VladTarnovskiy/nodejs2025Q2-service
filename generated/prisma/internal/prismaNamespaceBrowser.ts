@@ -57,7 +57,8 @@ export const ModelName = {
   Track: 'Track',
   AlbumOnFav: 'AlbumOnFav',
   ArtistOnFav: 'ArtistOnFav',
-  TrackOnFav: 'TrackOnFav'
+  TrackOnFav: 'TrackOnFav',
+  Registration: 'Registration'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -140,6 +141,15 @@ export const TrackOnFavScalarFieldEnum = {
 } as const
 
 export type TrackOnFavScalarFieldEnum = (typeof TrackOnFavScalarFieldEnum)[keyof typeof TrackOnFavScalarFieldEnum]
+
+
+export const RegistrationScalarFieldEnum = {
+  id: 'id',
+  login: 'login',
+  password: 'password'
+} as const
+
+export type RegistrationScalarFieldEnum = (typeof RegistrationScalarFieldEnum)[keyof typeof RegistrationScalarFieldEnum]
 
 
 export const SortOrder = {
