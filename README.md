@@ -56,7 +56,7 @@ docker-compose up
 
 ```
 
-npm run test
+npm run test:auth
 
 ```
 

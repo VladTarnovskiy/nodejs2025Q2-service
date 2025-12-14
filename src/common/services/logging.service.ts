@@ -42,7 +42,7 @@ export class LoggingService {
     this.toFile = process.env.LOG_TO_FILE === 'true';
     this.filePath =
       process.env.LOG_FILE_PATH || path.join(process.cwd(), 'logs/app.log');
-    const maxKb = Number(process.env.LOG_FILE_MAX_SIZE_KB || '2048'); // 2MB
+    const maxKb = Number(process.env.LOG_FILE_MAX_SIZE_KB || '2048');
     this.fileMaxSizeBytes = maxKb * 1024;
     this.fileMaxFiles = Number(process.env.LOG_FILE_MAX_FILES || '5');
 
