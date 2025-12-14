@@ -29,16 +29,16 @@ export class LoggingService {
   private readonly fileMaxSizeBytes: number;
   private readonly fileMaxFiles: number;
   private readonly levelOrder: Record<ENestLoggerLevel, number> = {
-    [ENestLoggerLevel.DEBUG]: 10,
-    [ENestLoggerLevel.LOG]: 20,
-    [ENestLoggerLevel.WARN]: 30,
-    [ENestLoggerLevel.ERROR]: 40,
+    [ENestLoggerLevel.DEBUG]: 0,
+    [ENestLoggerLevel.LOG]: 1,
+    [ENestLoggerLevel.WARN]: 2,
+    [ENestLoggerLevel.ERROR]: 3,
   };
-  private readonly currentLevel: ENestLoggerLevel;
+  private readonly currentLevel: number;
 
   constructor() {
-    this.currentLevel =
-      (process.env.LOG_LEVEL as ENestLoggerLevel) || ENestLoggerLevel.LOG;
+    this.currentLevel = parseInt(process.env.LOG_LEVEL, 10) ?? 3;
+
     this.toFile = process.env.LOG_TO_FILE === 'true';
     this.filePath =
       process.env.LOG_FILE_PATH || path.join(process.cwd(), 'logs/app.log');
@@ -130,7 +130,7 @@ export class LoggingService {
   }
 
   private shouldLog(level: ENestLoggerLevel): boolean {
-    return this.levelOrder[level] >= this.levelOrder[this.currentLevel];
+    return this.levelOrder[level] <= this.currentLevel;
   }
 
   private checkAndCreateLogDir() {
