@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import * as dotenvExpand from 'dotenv-expand';
+import { LoggingService } from './common/services/logging.service';
 
 dotenvExpand.expand(dotenv.config());
 
@@ -29,5 +30,19 @@ async function bootstrap() {
 
   const port = process.env.PORT || 4000;
   await app.listen(port);
+
+  const loggingService = app.get(LoggingService);
+
+  process.on('uncaughtException', (error) => {
+    loggingService.setContext('Uncaught Exception');
+    loggingService.error('Uncaught Exception:', { error });
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    loggingService.setContext('Unhandled Rejection');
+    loggingService.error('Unhandled Rejection at:', { reason, promise });
+    process.exit(1);
+  });
 }
 bootstrap();
