@@ -10,7 +10,7 @@ import { IUserAuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from './interfaces/jwt.interface';
 
 @Injectable()
 export class AuthService {
@@ -58,7 +58,7 @@ export class AuthService {
     }
 
     const accessPayload: JwtPayload = {
-      sub: user.id,
+      userId: user.id,
       login: user.login,
     };
 
@@ -76,6 +76,7 @@ export class AuthService {
     });
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: this.configService.get('jwtExpiresInRefresh', '24h'),
+      secret: this.configService.get('jwtSecretRefresh'),
     });
 
     return {
@@ -85,27 +86,30 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload) {
-    const user = await this.userService.findOne(payload.sub);
+    const user = await this.userService.findOne(payload.userId);
     if (!user) {
       throw new UnauthorizedException();
     }
     return user;
   }
 
-  async refresh(refreshToken: string) {
-    try {
-      const payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET_KEY'),
-      });
+  async refresh(refreshToken?: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
 
-      const user = await this.userService.findOne(payload.sub);
+    try {
+      const payload: JwtPayload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>('jwtSecretRefresh'),
+      });
+      const user = await this.userService.findOne(payload.userId);
 
       if (!user) {
         throw new UnauthorizedException();
       }
 
       return this.generateTokens({
-        sub: user.id,
+        userId: user.id,
         login: user.login,
       });
     } catch (e) {
